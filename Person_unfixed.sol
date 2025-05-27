@@ -20,11 +20,11 @@ address  father;
  uint state_subsidy;
 
 
- constructor(address ma, address fa) {
+ constructor() { // address ma, address fa) {
    age = 0;
    isMarried = false;
-   mother = ma;
-   father = fa;
+   mother = address(0x1);//ma;
+   father = address(0x2);//fa;
    spouse = address(0);
    state_subsidy = DEFAULT_SUBSIDY;
  } 
@@ -50,7 +50,35 @@ address  father;
 function setSpouse(address sp) public {
     spouse = sp;
 }
-function getSpouse() public returns (address) {
+// turned into view
+function getSpouse() public view returns (address) {
     return spouse;
 }
+
+// added 
+function getAge() public view returns (uint) {
+  return age;
+}
+
+// added
+function getMother() public view returns (address) {
+  return mother;
+}
+
+/* ~~~~ Echidna invariants ~~~~ */
+  function echidna_isMarried_consistency() public view returns (bool) {
+    return isMarried == (spouse != address(0));
+  }
+
+  function echidna_no_self_marriage() public view returns (bool) {
+    return spouse != address(this);
+  }
+
+  function echidna_no_mother_marriage() public view returns (bool) {
+    return spouse != mother;
+  } 
+
+  function echidna_no_father_marriage() public view returns (bool) {
+    return spouse != father;
+  } 
 }
